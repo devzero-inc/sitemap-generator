@@ -29,19 +29,19 @@ jobs:
 
     - name: Build Linux AMD64 Binary
       run: |
-        GOOS=linux GOARCH=amd64 go build -o sitemap-generator-$GOOS-$GOARCH
+        GOOS=linux GOARCH=amd64 sh -c 'go build -o sitemap-generator-${GOOS}-${GOARCH}'
 
     - name: Build Linux ARM64 Binary
       run: |
-        GOOS=linux GOARCH=arm64 go build -o sitemap-generator-$GOOS-$GOARCH
+        GOOS=linux GOARCH=arm64 sh -c 'go build -o sitemap-generator-${GOOS}-${GOARCH}'
 
     - name: Build macOS AMD64 Binary
       run: |
-        GOOS=darwin GOARCH=amd64 go build -o sitemap-generator-$GOOS-$GOARCH
+        GOOS=darwin GOARCH=amd64 sh -c 'go build -o sitemap-generator-${GOOS}-${GOARCH}'
 
     - name: Build macOS ARM64 Binary
       run: |
-        GOOS=darwin GOARCH=arm64 go build -o sitemap-generator-$GOOS-$GOARCH
+        GOOS=darwin GOARCH=arm64 sh -c 'go build -o sitemap-generator-${GOOS}-${GOARCH}'
 
     - name: Install GitHub CLI
       run: |
