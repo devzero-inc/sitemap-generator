@@ -59,18 +59,17 @@ jobs:
         draft: false
         prerelease: false
 
-    - name: Upload Release Assets
-      uses: actions/upload-release-asset@v1
+    - name: Install GitHub CLI
+      uses: actions/setup-gh@v1
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: |
-          binaries/linux-amd64/sitemap-generator
-          binaries/linux-arm64/sitemap-generator
-          binaries/darwin-amd64/sitemap-generator
-          binaries/darwin-arm64/sitemap-generator
-        asset_name: |
-          sitemap-generator-linux-amd64
-          sitemap-generator-linux-arm64
-          sitemap-generator-darwin-amd64
-          sitemap-generator-darwin-arm64
-        asset_content_type: application/octet-stream
+        version: latest
+
+    - name: Upload Release Assets
+      run: |
+        gh release upload ${{ github.event.inputs.tag_name }} \
+          binaries/linux-amd64/sitemap-generator#sitemap-generator-linux-amd64 \
+          binaries/linux-arm64/sitemap-generator#sitemap-generator-linux-arm64 \
+          binaries/darwin-amd64/sitemap-generator#sitemap-generator-darwin-amd64 \
+          binaries/darwin-arm64/sitemap-generator#sitemap-generator-darwin-arm64
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
