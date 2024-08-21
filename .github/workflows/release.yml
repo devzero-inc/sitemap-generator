@@ -1,4 +1,5 @@
 name: Build and Release Binaries
+run-name: "Build and Release Binaries - ${{ github.event.inputs.tag_name }}"
 
 on:
   workflow_dispatch:
@@ -13,11 +14,6 @@ jobs:
     name: Build and Release Binaries
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        goos: [linux, darwin]
-        goarch: [amd64, arm64]
-
     steps:
     - name: Check out code
       uses: actions/checkout@v2
@@ -27,11 +23,25 @@ jobs:
       with:
         go-version: '1.22'
 
-    - name: Build binary
+    - name: Build Linux AMD64 Binary
       run: |
-        mkdir -p binaries/${{ matrix.goos }}-${{ matrix.goarch }}
-        binary_name="sitemap-generator"
-        GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o binaries/${{ matrix.goos }}-${{ matrix.goarch }}/${binary_name}
+        mkdir -p binaries/linux-amd64
+        GOOS=linux GOARCH=amd64 go build -o binaries/linux-amd64/sitemap-generator
+
+    - name: Build Linux ARM64 Binary
+      run: |
+        mkdir -p binaries/linux-arm64
+        GOOS=linux GOARCH=arm64 go build -o binaries/linux-arm64/sitemap-generator
+
+    - name: Build macOS AMD64 Binary
+      run: |
+        mkdir -p binaries/darwin-amd64
+        GOOS=darwin GOARCH=amd64 go build -o binaries/darwin-amd64/sitemap-generator
+
+    - name: Build macOS ARM64 Binary
+      run: |
+        mkdir -p binaries/darwin-arm64
+        GOOS=darwin GOARCH=arm64 go build -o binaries/darwin-arm64/sitemap-generator
 
     - name: List output directory
       run: |
@@ -53,6 +63,14 @@ jobs:
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: binaries/${{ matrix.goos }}-${{ matrix.goarch }}/sitemap-generator
-        asset_name: sitemap-generator-${{ matrix.goos }}-${{ matrix.goarch }}
+        asset_path: |
+          binaries/linux-amd64/sitemap-generator
+          binaries/linux-arm64/sitemap-generator
+          binaries/darwin-amd64/sitemap-generator
+          binaries/darwin-arm64/sitemap-generator
+        asset_name: |
+          sitemap-generator-linux-amd64
+          sitemap-generator-linux-arm64
+          sitemap-generator-darwin-amd64
+          sitemap-generator-darwin-arm64
         asset_content_type: application/octet-stream
