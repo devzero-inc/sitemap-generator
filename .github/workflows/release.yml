@@ -43,19 +43,9 @@ jobs:
         prerelease: false
 
     - name: Upload Release Assets
-      run: |
-        for file in binaries/*/*; do
-          basename=$(basename $file)
-          goos=${{ matrix.goos }}
-          goarch=${{ matrix.goarch }}
-          if [ "$goos" = "windows" ]; then
-            file=binaries/$goos-$goarch/sitemap-generator.exe
-          else
-            file=binaries/$goos-$goarch/sitemap-generator
-          fi
-          curl --fail -X POST \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Content-Type: application/octet-stream" \
-            --data-binary @$file \
-            "${{ steps.create_release.outputs.upload_url }}?name=$(basename $file)"
-        done
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: binaries/${{ matrix.goos }}-${{ matrix.goarch }}/sitemap-generator*
+        asset_name: sitemap-generator-${{ matrix.goos }}-${{ matrix.goarch }}
+        asset_content_type: application/octet-stream
