@@ -6,8 +6,8 @@ on:
       - 'v*.*.*'
 
 jobs:
-  build:
-    name: Build Binaries
+  build-and-release:
+    name: Build and Release Binaries
     runs-on: ubuntu-latest
 
     strategy:
@@ -27,23 +27,9 @@ jobs:
     - name: Build binary
       run: |
         mkdir -p binaries/${{ matrix.goos }}-${{ matrix.goarch }}
-        GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o binaries/${{ matrix.goos }}-${{ matrix.goarch }}/sitemap-generator
-
-    - name: Upload binaries
-      uses: actions/upload-artifact@v3
-      with:
-        name: sitemap-generator-${{ matrix.goos }}-${{ matrix.goarch }}
-        path: binaries/${{ matrix.goos }}-${{ matrix.goarch }}/sitemap-generator
-
-  release:
-    name: Release
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - name: Download binaries
-      uses: actions/download-artifact@v3
-      with:
-        path: ./binaries
+        binary_name="sitemap-generator"
+        if [ ${{ matrix.goos }} = "windows" ]; then binary_name="sitemap-generator.exe"; fi
+        GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o binaries/${{ matrix.goos }}-${{ matrix.goarch }}/${binary_name}
 
     - name: Create Release
       id: create_release
@@ -57,11 +43,19 @@ jobs:
         prerelease: false
 
     - name: Upload Release Assets
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: binaries/${{ matrix.goos }}-${{ matrix.goarch }}/sitemap-generator
-        asset_name: sitemap-generator-${{ matrix.goos }}-${{ matrix.goarch }}
-        asset_content_type: application/octet-stream
+      run: |
+        for file in binaries/*/*; do
+          basename=$(basename $file)
+          goos=$(echo $basename | cut -d'-' -f1)
+          goarch=$(echo $basename | cut -d'-' -f2)
+          if [ "$goos" = "windows" ]; then
+            file=binaries/$goos-$goarch/sitemap-generator.exe
+          else
+            file=binaries/$goos-$goarch/sitemap-generator
+          fi
+          curl --fail -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/octet-stream" \
+            --data-binary @$file \
+            "${{ steps.create_release.outputs.upload_url }}?name=$(basename $file)"
+        done
