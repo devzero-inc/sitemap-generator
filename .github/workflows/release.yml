@@ -29,28 +29,19 @@ jobs:
 
     - name: Build Linux AMD64 Binary
       run: |
-        mkdir -p binaries/linux-amd64
-        GOOS=linux GOARCH=amd64 go build -o binaries/linux-amd64/sitemap-generator
+        GOOS=linux GOARCH=amd64 go build -o sitemap-generator-$GOOS-$GOARCH
 
     - name: Build Linux ARM64 Binary
       run: |
-        mkdir -p binaries/linux-arm64
-        GOOS=linux GOARCH=arm64 go build -o binaries/linux-arm64/sitemap-generator
+        GOOS=linux GOARCH=arm64 go build -o sitemap-generator-$GOOS-$GOARCH
 
     - name: Build macOS AMD64 Binary
       run: |
-        mkdir -p binaries/darwin-amd64
-        GOOS=darwin GOARCH=amd64 go build -o binaries/darwin-amd64/sitemap-generator
+        GOOS=darwin GOARCH=amd64 go build -o sitemap-generator-$GOOS-$GOARCH
 
     - name: Build macOS ARM64 Binary
       run: |
-        mkdir -p binaries/darwin-arm64
-        GOOS=darwin GOARCH=arm64 go build -o binaries/darwin-arm64/sitemap-generator
-
-    - name: List output directory
-      run: |
-        echo "Listing binaries directory for debugging:"
-        ls -R binaries
+        GOOS=darwin GOARCH=arm64 go build -o sitemap-generator-$GOOS-$GOARCH
 
     - name: Install GitHub CLI
       run: |
@@ -61,9 +52,9 @@ jobs:
       run: |
         gh release create ${{ github.event.inputs.tag_name }} --notes "${{ github.event.inputs.release_description }}"
         gh release upload ${{ github.event.inputs.tag_name }} \
-          binaries/linux-amd64/sitemap-generator#sitemap-generator-linux-amd64 \
-          binaries/linux-arm64/sitemap-generator#sitemap-generator-linux-arm64 \
-          binaries/darwin-amd64/sitemap-generator#sitemap-generator-darwin-amd64 \
-          binaries/darwin-arm64/sitemap-generator#sitemap-generator-darwin-arm64
+          sitemap-generator-linux-amd64 \
+          sitemap-generator-linux-arm64 \
+          sitemap-generator-darwin-amd64 \
+          sitemap-generator-darwin-arm64
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
