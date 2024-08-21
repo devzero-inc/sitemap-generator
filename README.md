@@ -9,6 +9,17 @@ This project is a Go application designed to generate sitemaps for websites. It 
 - Additional URLs: Allows inclusion of additional URLs in the sitemap.
 - Verbose Mode: Provides detailed output for debugging and monitoring.
 
+## Install binary
+
+```
+curl -L -o sitemap-generator \
+    https://github.com/devzero-inc/sitemap-generator/releases/latest/download/sitemap-generator-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/') && \
+    chmod +x sitemap-generator
+mv sitemap-generator /usr/local/bin/sitemap-generator
+# or
+sudo mv sitemap-generator /usr/local/bin/sitemap-generator
+```
+
 ## Prerequisites
 Go programming language (version 1.22 or later)
 
