@@ -60,9 +60,9 @@ jobs:
         prerelease: false
 
     - name: Install GitHub CLI
-      uses: actions/setup-gh@v1
-      with:
-        version: latest
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gh
 
     - name: Upload Release Assets
       run: |
