@@ -46,8 +46,8 @@ jobs:
       run: |
         for file in binaries/*/*; do
           basename=$(basename $file)
-          goos=$(echo $basename | cut -d'-' -f1)
-          goarch=$(echo $basename | cut -d'-' -f2)
+          goos=${{ matrix.goos }}
+          goarch=${{ matrix.goarch }}
           if [ "$goos" = "windows" ]; then
             file=binaries/$goos-$goarch/sitemap-generator.exe
           else
