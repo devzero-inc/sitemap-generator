@@ -8,6 +8,10 @@ on:
         description: 'The tag name for this release'
         required: true
         default: 'v0.0.1'
+      release_description:
+        description: 'The description for this release'
+        required: false
+        default: 'new release!'
 
 jobs:
   build-and-release:
@@ -48,24 +52,14 @@ jobs:
         echo "Listing binaries directory for debugging:"
         ls -R binaries
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.event.inputs.tag_name }}
-        release_name: ${{ github.event.inputs.tag_name }}
-        draft: false
-        prerelease: false
-
     - name: Install GitHub CLI
       run: |
         sudo apt-get update
         sudo apt-get install -y gh
 
-    - name: Upload Release Assets
+    - name: Create a Release and Upload Release Assets
       run: |
+        gh release create ${{ github.event.inputs.tag_name }} --notes "${{ github.event.inputs.release_description }}"
         gh release upload ${{ github.event.inputs.tag_name }} \
           binaries/linux-amd64/sitemap-generator#sitemap-generator-linux-amd64 \
           binaries/linux-arm64/sitemap-generator#sitemap-generator-linux-arm64 \
