@@ -55,6 +55,7 @@ jobs:
           sitemap-generator-linux-amd64 \
           sitemap-generator-linux-arm64 \
           sitemap-generator-darwin-amd64 \
-          sitemap-generator-darwin-arm64
+          sitemap-generator-darwin-arm64 \
+          --clobber
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
