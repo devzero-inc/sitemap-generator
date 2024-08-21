@@ -4,10 +4,10 @@
 This project is a Go application designed to generate sitemaps for websites. It crawls the specified domain, normalizes URLs, and generates a sitemap in XML format. The application also supports adding additional URLs and provides a verbose mode for detailed output.
 
 ## Features
-Sitemap Generation: Automatically generates sitemaps for websites.
-URL Normalization: Removes trailing slashes and ignores URLs with query parameters to maintain consistency.
-Additional URLs: Allows inclusion of additional URLs in the sitemap.
-Verbose Mode: Provides detailed output for debugging and monitoring.
+- Sitemap Generation: Automatically generates sitemaps for websites.
+- URL Normalization: Removes trailing slashes and ignores URLs with query parameters to maintain consistency.
+- Additional URLs: Allows inclusion of additional URLs in the sitemap.
+- Verbose Mode: Provides detailed output for debugging and monitoring.
 
 ## Prerequisites
 Go programming language (version 1.22 or later)
