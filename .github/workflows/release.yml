@@ -31,6 +31,11 @@ jobs:
         if [ ${{ matrix.goos }} = "windows" ]; then binary_name="sitemap-generator.exe"; fi
         GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o binaries/${{ matrix.goos }}-${{ matrix.goarch }}/${binary_name}
 
+    - name: List output directory
+      run: |
+        echo "Listing binaries directory for debugging:"
+        ls -R binaries
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
